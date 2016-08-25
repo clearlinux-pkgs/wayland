@@ -4,7 +4,7 @@
 #
 Name     : wayland
 Version  : 1.11.0
-Release  : 1
+Release  : 2
 URL      : https://wayland.freedesktop.org/releases/wayland-1.11.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.11.0.tar.xz
 Summary  : Wayland cursor helper library
@@ -75,6 +75,13 @@ lib components for the wayland package.
 
 %build
 export LANG=C
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -falign-functions=32 -fno-semantic-interposition -O3 "
+export FCFLAGS="$CFLAGS -falign-functions=32 -fno-semantic-interposition -O3 "
+export FFLAGS="$CFLAGS -falign-functions=32 -fno-semantic-interposition -O3 "
+export CXXFLAGS="$CXXFLAGS -falign-functions=32 -fno-semantic-interposition -O3 "
 %configure --disable-static --disable-documentation
 make V=1  %{?_smp_mflags}
 
