@@ -4,7 +4,7 @@
 #
 Name     : wayland
 Version  : 1.12.0
-Release  : 4
+Release  : 5
 URL      : https://wayland.freedesktop.org/releases/wayland-1.12.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.12.0.tar.xz
 Summary  : Wayland cursor helper library
@@ -15,10 +15,19 @@ Requires: wayland-lib
 Requires: wayland-data
 BuildRequires : docbook-xml
 BuildRequires : doxygen
+BuildRequires : gcc-dev32
+BuildRequires : gcc-libgcc32
+BuildRequires : gcc-libstdc++32
+BuildRequires : glibc-dev32
+BuildRequires : glibc-libc32
 BuildRequires : graphviz
 BuildRequires : grep
 BuildRequires : libxslt
 BuildRequires : mesa-dev
+BuildRequires : mesa-dev32
+BuildRequires : pkgconfig(32expat)
+BuildRequires : pkgconfig(32libffi)
+BuildRequires : pkgconfig(32libxml-2.0)
 BuildRequires : pkgconfig(expat)
 BuildRequires : pkgconfig(libffi)
 BuildRequires : pkgconfig(libxml-2.0)
@@ -62,6 +71,18 @@ Provides: wayland-devel
 dev components for the wayland package.
 
 
+%package dev32
+Summary: dev32 components for the wayland package.
+Group: Default
+Requires: wayland-lib32
+Requires: wayland-bin
+Requires: wayland-data
+Requires: wayland-dev
+
+%description dev32
+dev32 components for the wayland package.
+
+
 %package lib
 Summary: lib components for the wayland package.
 Group: Libraries
@@ -71,21 +92,38 @@ Requires: wayland-data
 lib components for the wayland package.
 
 
+%package lib32
+Summary: lib32 components for the wayland package.
+Group: Default
+Requires: wayland-data
+
+%description lib32
+lib32 components for the wayland package.
+
+
 %prep
 %setup -q -n wayland-1.12.0
+pushd ..
+cp -a wayland-1.12.0 build32
+popd
 
 %build
 export LANG=C
-export AR=gcc-ar
-export RANLIB=gcc-ranlib
-export NM=gcc-nm
-export CFLAGS="$CFLAGS -falign-functions=32 -O3 -fno-semantic-interposition "
-export FCFLAGS="$CFLAGS -falign-functions=32 -O3 -fno-semantic-interposition "
-export FFLAGS="$CFLAGS -falign-functions=32 -O3 -fno-semantic-interposition "
-export CXXFLAGS="$CXXFLAGS -falign-functions=32 -O3 -fno-semantic-interposition "
+export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
 %configure --disable-static --disable-documentation
 make V=1  %{?_smp_mflags}
 
+pushd ../build32/
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export CFLAGS="$CFLAGS -m32"
+export CXXFLAGS="$CXXFLAGS -m32"
+export LDFLAGS="$LDFLAGS -m32"
+%configure --disable-static --disable-documentation  --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+make V=1  %{?_smp_mflags}
+popd
 %check
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
@@ -95,6 +133,15 @@ make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
 rm -rf %{buildroot}
+pushd ../build32/
+%make_install32
+if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
+then
+pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+popd
 %make_install
 
 %files
@@ -113,10 +160,43 @@ rm -rf %{buildroot}
 %files dev
 %defattr(-,root,root,-)
 /usr/include/*.h
-/usr/lib64/*.so
-/usr/lib64/pkgconfig/*.pc
+/usr/lib64/libwayland-client.so
+/usr/lib64/libwayland-cursor.so
+/usr/lib64/libwayland-server.so
+/usr/lib64/pkgconfig/wayland-client.pc
+/usr/lib64/pkgconfig/wayland-cursor.pc
+/usr/lib64/pkgconfig/wayland-scanner.pc
+/usr/lib64/pkgconfig/wayland-server.pc
 /usr/share/aclocal/*.m4
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/libwayland-client.so
+/usr/lib32/libwayland-cursor.so
+/usr/lib32/libwayland-server.so
+/usr/lib32/pkgconfig/32wayland-client.pc
+/usr/lib32/pkgconfig/32wayland-cursor.pc
+/usr/lib32/pkgconfig/32wayland-scanner.pc
+/usr/lib32/pkgconfig/32wayland-server.pc
+/usr/lib32/pkgconfig/wayland-client.pc
+/usr/lib32/pkgconfig/wayland-cursor.pc
+/usr/lib32/pkgconfig/wayland-scanner.pc
+/usr/lib32/pkgconfig/wayland-server.pc
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/*.so.*
+/usr/lib64/libwayland-client.so.0
+/usr/lib64/libwayland-client.so.0.3.0
+/usr/lib64/libwayland-cursor.so.0
+/usr/lib64/libwayland-cursor.so.0.0.0
+/usr/lib64/libwayland-server.so.0
+/usr/lib64/libwayland-server.so.0.1.0
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/libwayland-client.so.0
+/usr/lib32/libwayland-client.so.0.3.0
+/usr/lib32/libwayland-cursor.so.0
+/usr/lib32/libwayland-cursor.so.0.0.0
+/usr/lib32/libwayland-server.so.0
+/usr/lib32/libwayland-server.so.0.1.0
