@@ -5,12 +5,12 @@
 # Source0 file verified with key 0x11A30156E0E67611 (bryce@ubuntu.com)
 #
 Name     : wayland
-Version  : 1.13.0
-Release  : 8
-URL      : https://wayland.freedesktop.org/releases/wayland-1.13.0.tar.xz
-Source0  : https://wayland.freedesktop.org/releases/wayland-1.13.0.tar.xz
-Source99 : https://wayland.freedesktop.org/releases/wayland-1.13.0.tar.xz.sig
-Summary  : Wayland cursor helper library
+Version  : 1.14.0
+Release  : 9
+URL      : https://wayland.freedesktop.org/releases/wayland-1.14.0.tar.xz
+Source0  : https://wayland.freedesktop.org/releases/wayland-1.14.0.tar.xz
+Source99 : https://wayland.freedesktop.org/releases/wayland-1.14.0.tar.xz.sig
+Summary  : Wayland scanner (not installed)
 Group    : Development/Tools
 License  : MIT
 Requires: wayland-bin
@@ -105,14 +105,17 @@ lib32 components for the wayland package.
 
 
 %prep
-%setup -q -n wayland-1.13.0
+%setup -q -n wayland-1.14.0
 pushd ..
-cp -a wayland-1.13.0 build32
+cp -a wayland-1.14.0 build32
 popd
 
 %build
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1489155510
+export SOURCE_DATE_EPOCH=1502222769
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
@@ -132,11 +135,11 @@ popd
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1489155510
+export SOURCE_DATE_EPOCH=1502222769
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
