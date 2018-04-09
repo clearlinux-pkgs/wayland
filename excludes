@@ -2,3 +2,10 @@
 # names, one per line.
 /usr/lib64/libwayland-egl.so.1.0.0
 /usr/lib64/pkgconfig/wayland-egl.pc 
+/usr/lib32/libwayland-egl.so.1
+/usr/lib32/libwayland-egl.so
+/usr/lib32/libwayland-egl.so.1.0.0
+/usr/lib32/pkgconfig/wayland-egl.pc
+/usr/lib64/libwayland-egl.so
+/usr/lib32/pkgconfig/32wayland-egl.pc
+/usr/lib64/libwayland-egl.so.1

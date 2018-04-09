@@ -6,7 +6,7 @@
 #
 Name     : wayland
 Version  : 1.15.0
-Release  : 12
+Release  : 13
 URL      : https://wayland.freedesktop.org/releases/wayland-1.15.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.15.0.tar.xz
 Source99 : https://wayland.freedesktop.org/releases/wayland-1.15.0.tar.xz.sig
@@ -115,7 +115,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1523305507
+export SOURCE_DATE_EPOCH=1523306955
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
@@ -139,7 +139,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1523305507
+export SOURCE_DATE_EPOCH=1523306955
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32
@@ -167,11 +167,11 @@ popd
 
 %files dev
 %defattr(-,root,root,-)
+%exclude /usr/lib64/libwayland-egl.so
 %exclude /usr/lib64/pkgconfig/wayland-egl.pc
 /usr/include/*.h
 /usr/lib64/libwayland-client.so
 /usr/lib64/libwayland-cursor.so
-/usr/lib64/libwayland-egl.so
 /usr/lib64/libwayland-server.so
 /usr/lib64/pkgconfig/wayland-client.pc
 /usr/lib64/pkgconfig/wayland-cursor.pc
@@ -182,41 +182,41 @@ popd
 
 %files dev32
 %defattr(-,root,root,-)
+%exclude /usr/lib32/libwayland-egl.so
+%exclude /usr/lib32/pkgconfig/32wayland-egl.pc
+%exclude /usr/lib32/pkgconfig/wayland-egl.pc
 /usr/lib32/libwayland-client.so
 /usr/lib32/libwayland-cursor.so
-/usr/lib32/libwayland-egl.so
 /usr/lib32/libwayland-server.so
 /usr/lib32/pkgconfig/32wayland-client.pc
 /usr/lib32/pkgconfig/32wayland-cursor.pc
 /usr/lib32/pkgconfig/32wayland-egl-backend.pc
-/usr/lib32/pkgconfig/32wayland-egl.pc
 /usr/lib32/pkgconfig/32wayland-scanner.pc
 /usr/lib32/pkgconfig/32wayland-server.pc
 /usr/lib32/pkgconfig/wayland-client.pc
 /usr/lib32/pkgconfig/wayland-cursor.pc
 /usr/lib32/pkgconfig/wayland-egl-backend.pc
-/usr/lib32/pkgconfig/wayland-egl.pc
 /usr/lib32/pkgconfig/wayland-scanner.pc
 /usr/lib32/pkgconfig/wayland-server.pc
 
 %files lib
 %defattr(-,root,root,-)
+%exclude /usr/lib64/libwayland-egl.so.1
 %exclude /usr/lib64/libwayland-egl.so.1.0.0
 /usr/lib64/libwayland-client.so.0
 /usr/lib64/libwayland-client.so.0.3.0
 /usr/lib64/libwayland-cursor.so.0
 /usr/lib64/libwayland-cursor.so.0.0.0
-/usr/lib64/libwayland-egl.so.1
 /usr/lib64/libwayland-server.so.0
 /usr/lib64/libwayland-server.so.0.1.0
 
 %files lib32
 %defattr(-,root,root,-)
+%exclude /usr/lib32/libwayland-egl.so.1
+%exclude /usr/lib32/libwayland-egl.so.1.0.0
 /usr/lib32/libwayland-client.so.0
 /usr/lib32/libwayland-client.so.0.3.0
 /usr/lib32/libwayland-cursor.so.0
 /usr/lib32/libwayland-cursor.so.0.0.0
-/usr/lib32/libwayland-egl.so.1
-/usr/lib32/libwayland-egl.so.1.0.0
 /usr/lib32/libwayland-server.so.0
 /usr/lib32/libwayland-server.so.0.1.0
