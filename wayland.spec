@@ -6,7 +6,7 @@
 #
 Name     : wayland
 Version  : 1.15.0
-Release  : 14
+Release  : 15
 URL      : https://wayland.freedesktop.org/releases/wayland-1.15.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.15.0.tar.xz
 Source99 : https://wayland.freedesktop.org/releases/wayland-1.15.0.tar.xz.sig
@@ -15,6 +15,7 @@ Group    : Development/Tools
 License  : MIT
 Requires: wayland-bin
 Requires: wayland-lib
+Requires: wayland-license
 Requires: wayland-data
 BuildRequires : docbook-xml
 BuildRequires : doxygen
@@ -28,6 +29,7 @@ BuildRequires : grep
 BuildRequires : libxslt
 BuildRequires : mesa-dev
 BuildRequires : mesa-dev32
+BuildRequires : pkg-config
 BuildRequires : pkgconfig(32expat)
 BuildRequires : pkgconfig(32libffi)
 BuildRequires : pkgconfig(32libxml-2.0)
@@ -49,6 +51,7 @@ client itself.  The clients can be traditional applications, X servers
 Summary: bin components for the wayland package.
 Group: Binaries
 Requires: wayland-data
+Requires: wayland-license
 
 %description bin
 bin components for the wayland package.
@@ -90,6 +93,7 @@ dev32 components for the wayland package.
 Summary: lib components for the wayland package.
 Group: Libraries
 Requires: wayland-data
+Requires: wayland-license
 
 %description lib
 lib components for the wayland package.
@@ -99,9 +103,18 @@ lib components for the wayland package.
 Summary: lib32 components for the wayland package.
 Group: Default
 Requires: wayland-data
+Requires: wayland-license
 
 %description lib32
 lib32 components for the wayland package.
+
+
+%package license
+Summary: license components for the wayland package.
+Group: Default
+
+%description license
+license components for the wayland package.
 
 
 %prep
@@ -115,7 +128,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1523306955
+export SOURCE_DATE_EPOCH=1532012726
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
@@ -139,8 +152,10 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1523306955
+export SOURCE_DATE_EPOCH=1532012726
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/doc/wayland
+cp COPYING %{buildroot}/usr/share/doc/wayland/COPYING
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -167,56 +182,60 @@ popd
 
 %files dev
 %defattr(-,root,root,-)
-%exclude /usr/lib64/libwayland-egl.so
-%exclude /usr/lib64/pkgconfig/wayland-egl.pc
 /usr/include/*.h
 /usr/lib64/libwayland-client.so
 /usr/lib64/libwayland-cursor.so
+/usr/lib64/libwayland-egl.so
 /usr/lib64/libwayland-server.so
 /usr/lib64/pkgconfig/wayland-client.pc
 /usr/lib64/pkgconfig/wayland-cursor.pc
 /usr/lib64/pkgconfig/wayland-egl-backend.pc
+/usr/lib64/pkgconfig/wayland-egl.pc
 /usr/lib64/pkgconfig/wayland-scanner.pc
 /usr/lib64/pkgconfig/wayland-server.pc
 /usr/share/aclocal/*.m4
 
 %files dev32
 %defattr(-,root,root,-)
-%exclude /usr/lib32/libwayland-egl.so
-%exclude /usr/lib32/pkgconfig/32wayland-egl.pc
-%exclude /usr/lib32/pkgconfig/wayland-egl.pc
 /usr/lib32/libwayland-client.so
 /usr/lib32/libwayland-cursor.so
+/usr/lib32/libwayland-egl.so
 /usr/lib32/libwayland-server.so
 /usr/lib32/pkgconfig/32wayland-client.pc
 /usr/lib32/pkgconfig/32wayland-cursor.pc
 /usr/lib32/pkgconfig/32wayland-egl-backend.pc
+/usr/lib32/pkgconfig/32wayland-egl.pc
 /usr/lib32/pkgconfig/32wayland-scanner.pc
 /usr/lib32/pkgconfig/32wayland-server.pc
 /usr/lib32/pkgconfig/wayland-client.pc
 /usr/lib32/pkgconfig/wayland-cursor.pc
 /usr/lib32/pkgconfig/wayland-egl-backend.pc
+/usr/lib32/pkgconfig/wayland-egl.pc
 /usr/lib32/pkgconfig/wayland-scanner.pc
 /usr/lib32/pkgconfig/wayland-server.pc
 
 %files lib
 %defattr(-,root,root,-)
-%exclude /usr/lib64/libwayland-egl.so.1
-%exclude /usr/lib64/libwayland-egl.so.1.0.0
 /usr/lib64/libwayland-client.so.0
 /usr/lib64/libwayland-client.so.0.3.0
 /usr/lib64/libwayland-cursor.so.0
 /usr/lib64/libwayland-cursor.so.0.0.0
+/usr/lib64/libwayland-egl.so.1
+/usr/lib64/libwayland-egl.so.1.0.0
 /usr/lib64/libwayland-server.so.0
 /usr/lib64/libwayland-server.so.0.1.0
 
 %files lib32
 %defattr(-,root,root,-)
-%exclude /usr/lib32/libwayland-egl.so.1
-%exclude /usr/lib32/libwayland-egl.so.1.0.0
 /usr/lib32/libwayland-client.so.0
 /usr/lib32/libwayland-client.so.0.3.0
 /usr/lib32/libwayland-cursor.so.0
 /usr/lib32/libwayland-cursor.so.0.0.0
+/usr/lib32/libwayland-egl.so.1
+/usr/lib32/libwayland-egl.so.1.0.0
 /usr/lib32/libwayland-server.so.0
 /usr/lib32/libwayland-server.so.0.1.0
+
+%files license
+%defattr(-,root,root,-)
+/usr/share/doc/wayland/COPYING
