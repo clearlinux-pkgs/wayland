@@ -6,17 +6,17 @@
 #
 Name     : wayland
 Version  : 1.16.0
-Release  : 17
+Release  : 18
 URL      : https://wayland.freedesktop.org/releases/wayland-1.16.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.16.0.tar.xz
 Source99 : https://wayland.freedesktop.org/releases/wayland-1.16.0.tar.xz.sig
 Summary  : Wayland scanner
 Group    : Development/Tools
 License  : MIT
-Requires: wayland-bin
-Requires: wayland-lib
-Requires: wayland-license
-Requires: wayland-data
+Requires: wayland-bin = %{version}-%{release}
+Requires: wayland-data = %{version}-%{release}
+Requires: wayland-lib = %{version}-%{release}
+Requires: wayland-license = %{version}-%{release}
 BuildRequires : docbook-xml
 BuildRequires : doxygen
 BuildRequires : gcc-dev32
@@ -27,8 +27,6 @@ BuildRequires : glibc-libc32
 BuildRequires : graphviz
 BuildRequires : grep
 BuildRequires : libxslt
-BuildRequires : mesa-dev
-BuildRequires : mesa-dev32
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(32expat)
 BuildRequires : pkgconfig(32libffi)
@@ -50,8 +48,8 @@ client itself.  The clients can be traditional applications, X servers
 %package bin
 Summary: bin components for the wayland package.
 Group: Binaries
-Requires: wayland-data
-Requires: wayland-license
+Requires: wayland-data = %{version}-%{release}
+Requires: wayland-license = %{version}-%{release}
 
 %description bin
 bin components for the wayland package.
@@ -68,10 +66,10 @@ data components for the wayland package.
 %package dev
 Summary: dev components for the wayland package.
 Group: Development
-Requires: wayland-lib
-Requires: wayland-bin
-Requires: wayland-data
-Provides: wayland-devel
+Requires: wayland-lib = %{version}-%{release}
+Requires: wayland-bin = %{version}-%{release}
+Requires: wayland-data = %{version}-%{release}
+Provides: wayland-devel = %{version}-%{release}
 
 %description dev
 dev components for the wayland package.
@@ -80,10 +78,10 @@ dev components for the wayland package.
 %package dev32
 Summary: dev32 components for the wayland package.
 Group: Default
-Requires: wayland-lib32
-Requires: wayland-bin
-Requires: wayland-data
-Requires: wayland-dev
+Requires: wayland-lib32 = %{version}-%{release}
+Requires: wayland-bin = %{version}-%{release}
+Requires: wayland-data = %{version}-%{release}
+Requires: wayland-dev = %{version}-%{release}
 
 %description dev32
 dev32 components for the wayland package.
@@ -92,8 +90,8 @@ dev32 components for the wayland package.
 %package lib
 Summary: lib components for the wayland package.
 Group: Libraries
-Requires: wayland-data
-Requires: wayland-license
+Requires: wayland-data = %{version}-%{release}
+Requires: wayland-license = %{version}-%{release}
 
 %description lib
 lib components for the wayland package.
@@ -102,8 +100,8 @@ lib components for the wayland package.
 %package lib32
 Summary: lib32 components for the wayland package.
 Group: Default
-Requires: wayland-data
-Requires: wayland-license
+Requires: wayland-data = %{version}-%{release}
+Requires: wayland-license = %{version}-%{release}
 
 %description lib32
 lib32 components for the wayland package.
@@ -128,7 +126,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1536125844
+export SOURCE_DATE_EPOCH=1539383129
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
@@ -138,6 +136,7 @@ make  %{?_smp_mflags}
 
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export ASFLAGS="$ASFLAGS --32"
 export CFLAGS="$CFLAGS -m32"
 export CXXFLAGS="$CXXFLAGS -m32"
 export LDFLAGS="$LDFLAGS -m32"
@@ -150,12 +149,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
+cd ../build32;
+make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1536125844
+export SOURCE_DATE_EPOCH=1539383129
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/wayland
-cp COPYING %{buildroot}/usr/share/doc/wayland/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/wayland
+cp COPYING %{buildroot}/usr/share/package-licenses/wayland/COPYING
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -237,5 +238,5 @@ popd
 /usr/lib32/libwayland-server.so.0.1.0
 
 %files license
-%defattr(-,root,root,-)
-/usr/share/doc/wayland/COPYING
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/wayland/COPYING
