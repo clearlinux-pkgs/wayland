@@ -6,7 +6,7 @@
 #
 Name     : wayland
 Version  : 1.16.0
-Release  : 18
+Release  : 19
 URL      : https://wayland.freedesktop.org/releases/wayland-1.16.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.16.0.tar.xz
 Source99 : https://wayland.freedesktop.org/releases/wayland-1.16.0.tar.xz.sig
