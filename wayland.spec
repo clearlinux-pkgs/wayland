@@ -5,12 +5,12 @@
 # Source0 file verified with key 0x5E54498E697F11D7 (derekf@osg.samsung.com)
 #
 Name     : wayland
-Version  : 1.16.0
-Release  : 20
-URL      : https://wayland.freedesktop.org/releases/wayland-1.16.0.tar.xz
-Source0  : https://wayland.freedesktop.org/releases/wayland-1.16.0.tar.xz
-Source99 : https://wayland.freedesktop.org/releases/wayland-1.16.0.tar.xz.sig
-Summary  : Wayland scanner
+Version  : 1.17.0
+Release  : 21
+URL      : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz
+Source0  : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz
+Source99 : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz.sig
+Summary  : A computer display server protocol
 Group    : Development/Tools
 License  : MIT
 Requires: wayland-bin = %{version}-%{release}
@@ -70,6 +70,7 @@ Requires: wayland-lib = %{version}-%{release}
 Requires: wayland-bin = %{version}-%{release}
 Requires: wayland-data = %{version}-%{release}
 Provides: wayland-devel = %{version}-%{release}
+Requires: wayland = %{version}-%{release}
 
 %description dev
 dev components for the wayland package.
@@ -116,9 +117,9 @@ license components for the wayland package.
 
 
 %prep
-%setup -q -n wayland-1.16.0
+%setup -q -n wayland-1.17.0
 pushd ..
-cp -a wayland-1.16.0 build32
+cp -a wayland-1.17.0 build32
 popd
 
 %build
@@ -126,7 +127,8 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1539383129
+export SOURCE_DATE_EPOCH=1553159338
+export LDFLAGS="${LDFLAGS} -fno-lto"
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
@@ -136,10 +138,10 @@ make  %{?_smp_mflags}
 
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
-export ASFLAGS="$ASFLAGS --32"
-export CFLAGS="$CFLAGS -m32"
-export CXXFLAGS="$CXXFLAGS -m32"
-export LDFLAGS="$LDFLAGS -m32"
+export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32"
 %configure --disable-static --disable-documentation   --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
 make  %{?_smp_mflags}
 popd
@@ -153,7 +155,7 @@ cd ../build32;
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1539383129
+export SOURCE_DATE_EPOCH=1553159338
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/wayland
 cp COPYING %{buildroot}/usr/share/package-licenses/wayland/COPYING
