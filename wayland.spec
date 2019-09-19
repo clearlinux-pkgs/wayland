@@ -6,11 +6,11 @@
 #
 Name     : wayland
 Version  : 1.17.0
-Release  : 22
+Release  : 23
 URL      : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz
-Source99 : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz.sig
-Summary  : A computer display server protocol
+Source1 : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz.sig
+Summary  : Frontend wayland-egl library
 Group    : Development/Tools
 License  : MIT
 Requires: wayland-bin = %{version}-%{release}
@@ -126,8 +126,9 @@ popd
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1557101270
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1568878748
+export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
@@ -141,14 +142,14 @@ make  %{?_smp_mflags}
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
-export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32"
-export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32"
-export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
 %configure --disable-static --disable-documentation   --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
 make  %{?_smp_mflags}
 popd
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
@@ -157,7 +158,7 @@ cd ../build32;
 make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1557101270
+export SOURCE_DATE_EPOCH=1568878748
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/wayland
 cp COPYING %{buildroot}/usr/share/package-licenses/wayland/COPYING
@@ -187,7 +188,18 @@ popd
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
+/usr/include/wayland-client-core.h
+/usr/include/wayland-client-protocol.h
+/usr/include/wayland-client.h
+/usr/include/wayland-cursor.h
+/usr/include/wayland-egl-backend.h
+/usr/include/wayland-egl-core.h
+/usr/include/wayland-egl.h
+/usr/include/wayland-server-core.h
+/usr/include/wayland-server-protocol.h
+/usr/include/wayland-server.h
+/usr/include/wayland-util.h
+/usr/include/wayland-version.h
 /usr/lib64/libwayland-client.so
 /usr/lib64/libwayland-cursor.so
 /usr/lib64/libwayland-egl.so
