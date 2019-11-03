@@ -6,7 +6,7 @@
 #
 Name     : wayland
 Version  : 1.17.0
-Release  : 23
+Release  : 24
 URL      : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz
 Source1 : https://wayland.freedesktop.org/releases/wayland-1.17.0.tar.xz.sig
