@@ -5,12 +5,12 @@
 # Source0 file verified with key 0x0FDE7BE0E88F5E48 (contact@emersion.fr)
 #
 Name     : wayland
-Version  : 1.18.0
-Release  : 25
-URL      : https://wayland.freedesktop.org/releases/wayland-1.18.0.tar.xz
-Source0  : https://wayland.freedesktop.org/releases/wayland-1.18.0.tar.xz
-Source1  : https://wayland.freedesktop.org/releases/wayland-1.18.0.tar.xz.sig
-Summary  : Server side implementation of the Wayland protocol
+Version  : 1.19.0
+Release  : 26
+URL      : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz
+Source0  : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz
+Source1  : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz.sig
+Summary  : Wayland cursor helper library
 Group    : Development/Tools
 License  : MIT
 Requires: wayland-bin = %{version}-%{release}
@@ -118,10 +118,10 @@ license components for the wayland package.
 
 
 %prep
-%setup -q -n wayland-1.18.0
-cd %{_builddir}/wayland-1.18.0
+%setup -q -n wayland-1.19.0
+cd %{_builddir}/wayland-1.19.0
 pushd ..
-cp -a wayland-1.18.0 build32
+cp -a wayland-1.19.0 build32
 popd
 
 %build
@@ -129,14 +129,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1585163959
+export SOURCE_DATE_EPOCH=1611782099
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FCFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 %configure --disable-static --disable-documentation
 make  %{?_smp_mflags}
@@ -155,15 +155,15 @@ export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 cd ../build32;
-make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1585163959
+export SOURCE_DATE_EPOCH=1611782099
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/wayland
-cp %{_builddir}/wayland-1.18.0/COPYING %{buildroot}/usr/share/package-licenses/wayland/997b2f1a3639f31f0757b06a15035315baaffadc
+cp %{_builddir}/wayland-1.19.0/COPYING %{buildroot}/usr/share/package-licenses/wayland/997b2f1a3639f31f0757b06a15035315baaffadc
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
