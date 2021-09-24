@@ -6,7 +6,7 @@
 #
 Name     : wayland
 Version  : 1.19.0
-Release  : 28
+Release  : 29
 URL      : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz
 Source1  : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz.sig
@@ -123,31 +123,44 @@ cd %{_builddir}/wayland-1.19.0
 pushd ..
 cp -a wayland-1.19.0 build32
 popd
+pushd ..
+cp -a wayland-1.19.0 buildavx2
+popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1611782099
+export SOURCE_DATE_EPOCH=1632493900
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FCFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FFLAGS="$FFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -ffat-lto-objects -flto=4 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
 %configure --disable-static --disable-documentation
 make  %{?_smp_mflags}
 
 pushd ../build32/
-export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig:/usr/share/pkgconfig"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
 export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
 export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
 export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
 %configure --disable-static --disable-documentation   --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+make  %{?_smp_mflags}
+popd
+unset PKG_CONFIG_PATH
+pushd ../buildavx2/
+export CFLAGS="$CFLAGS -m64 -march=haswell"
+export CXXFLAGS="$CXXFLAGS -m64 -march=haswell"
+export FFLAGS="$FFLAGS -m64 -march=haswell"
+export FCFLAGS="$FCFLAGS -m64 -march=haswell"
+export LDFLAGS="$LDFLAGS -m64 -march=haswell"
+%configure --disable-static --disable-documentation
 make  %{?_smp_mflags}
 popd
 %check
@@ -158,9 +171,11 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make %{?_smp_mflags} check
 cd ../build32;
 make %{?_smp_mflags} check || :
+cd ../buildavx2;
+make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1611782099
+export SOURCE_DATE_EPOCH=1632493900
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/wayland
 cp %{_builddir}/wayland-1.19.0/COPYING %{buildroot}/usr/share/package-licenses/wayland/997b2f1a3639f31f0757b06a15035315baaffadc
@@ -172,6 +187,15 @@ pushd %{buildroot}/usr/lib32/pkgconfig
 for i in *.pc ; do ln -s $i 32$i ; done
 popd
 fi
+if [ -d %{buildroot}/usr/share/pkgconfig ]
+then
+pushd %{buildroot}/usr/share/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+popd
+pushd ../buildavx2/
+%make_install_avx2
 popd
 %make_install
 
@@ -180,6 +204,7 @@ popd
 
 %files bin
 %defattr(-,root,root,-)
+/usr/bin/haswell/wayland-scanner
 /usr/bin/wayland-scanner
 
 %files data
@@ -202,6 +227,8 @@ popd
 /usr/include/wayland-server.h
 /usr/include/wayland-util.h
 /usr/include/wayland-version.h
+/usr/lib64/haswell/libwayland-client.so
+/usr/lib64/haswell/libwayland-server.so
 /usr/lib64/libwayland-client.so
 /usr/lib64/libwayland-cursor.so
 /usr/lib64/libwayland-egl.so
@@ -235,6 +262,10 @@ popd
 
 %files lib
 %defattr(-,root,root,-)
+/usr/lib64/haswell/libwayland-client.so.0
+/usr/lib64/haswell/libwayland-client.so.0.3.0
+/usr/lib64/haswell/libwayland-server.so.0
+/usr/lib64/haswell/libwayland-server.so.0.1.0
 /usr/lib64/libwayland-client.so.0
 /usr/lib64/libwayland-client.so.0.3.0
 /usr/lib64/libwayland-cursor.so.0
