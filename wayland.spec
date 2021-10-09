@@ -6,7 +6,7 @@
 #
 Name     : wayland
 Version  : 1.19.0
-Release  : 30
+Release  : 31
 URL      : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz
 Source1  : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz.sig
@@ -15,6 +15,7 @@ Group    : Development/Tools
 License  : MIT
 Requires: wayland-bin = %{version}-%{release}
 Requires: wayland-data = %{version}-%{release}
+Requires: wayland-filemap = %{version}-%{release}
 Requires: wayland-lib = %{version}-%{release}
 Requires: wayland-license = %{version}-%{release}
 BuildRequires : buildreq-meson
@@ -51,6 +52,7 @@ Summary: bin components for the wayland package.
 Group: Binaries
 Requires: wayland-data = %{version}-%{release}
 Requires: wayland-license = %{version}-%{release}
+Requires: wayland-filemap = %{version}-%{release}
 
 %description bin
 bin components for the wayland package.
@@ -89,11 +91,20 @@ Requires: wayland-dev = %{version}-%{release}
 dev32 components for the wayland package.
 
 
+%package filemap
+Summary: filemap components for the wayland package.
+Group: Default
+
+%description filemap
+filemap components for the wayland package.
+
+
 %package lib
 Summary: lib components for the wayland package.
 Group: Libraries
 Requires: wayland-data = %{version}-%{release}
 Requires: wayland-license = %{version}-%{release}
+Requires: wayland-filemap = %{version}-%{release}
 
 %description lib
 lib components for the wayland package.
@@ -132,15 +143,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1633019312
+export SOURCE_DATE_EPOCH=1633809533
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
-export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
-export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
-export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mprefer-vector-width=256 "
+export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
+export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
+export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
+export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
 %configure --disable-static --disable-documentation
 make  %{?_smp_mflags}
 
@@ -175,7 +186,7 @@ cd ../buildavx2;
 make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1633019312
+export SOURCE_DATE_EPOCH=1633809533
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/wayland
 cp %{_builddir}/wayland-1.19.0/COPYING %{buildroot}/usr/share/package-licenses/wayland/997b2f1a3639f31f0757b06a15035315baaffadc
@@ -195,7 +206,8 @@ popd
 fi
 popd
 pushd ../buildavx2/
-%make_install_avx2
+%make_install_v3
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 popd
 %make_install
 
@@ -204,8 +216,8 @@ popd
 
 %files bin
 %defattr(-,root,root,-)
-/usr/bin/haswell/wayland-scanner
 /usr/bin/wayland-scanner
+/usr/share/clear/optimized-elf/bin*
 
 %files data
 %defattr(-,root,root,-)
@@ -227,8 +239,6 @@ popd
 /usr/include/wayland-server.h
 /usr/include/wayland-util.h
 /usr/include/wayland-version.h
-/usr/lib64/haswell/libwayland-client.so
-/usr/lib64/haswell/libwayland-server.so
 /usr/lib64/libwayland-client.so
 /usr/lib64/libwayland-cursor.so
 /usr/lib64/libwayland-egl.so
@@ -260,12 +270,12 @@ popd
 /usr/lib32/pkgconfig/wayland-scanner.pc
 /usr/lib32/pkgconfig/wayland-server.pc
 
+%files filemap
+%defattr(-,root,root,-)
+/usr/share/clear/filemap/filemap-wayland
+
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/haswell/libwayland-client.so.0
-/usr/lib64/haswell/libwayland-client.so.0.3.0
-/usr/lib64/haswell/libwayland-server.so.0
-/usr/lib64/haswell/libwayland-server.so.0.1.0
 /usr/lib64/libwayland-client.so.0
 /usr/lib64/libwayland-client.so.0.3.0
 /usr/lib64/libwayland-cursor.so.0
@@ -274,6 +284,7 @@ popd
 /usr/lib64/libwayland-egl.so.1.0.0
 /usr/lib64/libwayland-server.so.0
 /usr/lib64/libwayland-server.so.0.1.0
+/usr/share/clear/optimized-elf/lib*
 
 %files lib32
 %defattr(-,root,root,-)
