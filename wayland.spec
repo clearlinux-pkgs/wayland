@@ -5,12 +5,12 @@
 # Source0 file verified with key 0x0FDE7BE0E88F5E48 (contact@emersion.fr)
 #
 Name     : wayland
-Version  : 1.19.0
-Release  : 32
-URL      : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz
-Source0  : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz
-Source1  : https://wayland.freedesktop.org/releases/wayland-1.19.0.tar.xz.sig
-Summary  : Wayland cursor helper library
+Version  : 1.20.0
+Release  : 33
+URL      : https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz
+Source0  : https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz
+Source1  : https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz.sig
+Summary  : No detailed summary available
 Group    : Development/Tools
 License  : MIT
 Requires: wayland-bin = %{version}-%{release}
@@ -21,15 +21,14 @@ Requires: wayland-license = %{version}-%{release}
 BuildRequires : buildreq-meson
 BuildRequires : docbook-xml
 BuildRequires : doxygen
+BuildRequires : expat-dev
 BuildRequires : gcc-dev32
 BuildRequires : gcc-libgcc32
 BuildRequires : gcc-libstdc++32
 BuildRequires : glibc-dev32
 BuildRequires : glibc-libc32
 BuildRequires : graphviz
-BuildRequires : grep
 BuildRequires : libxslt
-BuildRequires : pkg-config
 BuildRequires : pkgconfig(32expat)
 BuildRequires : pkgconfig(32libffi)
 BuildRequires : pkgconfig(32libxml-2.0)
@@ -129,13 +128,13 @@ license components for the wayland package.
 
 
 %prep
-%setup -q -n wayland-1.19.0
-cd %{_builddir}/wayland-1.19.0
+%setup -q -n wayland-1.20.0
+cd %{_builddir}/wayland-1.20.0
 pushd ..
-cp -a wayland-1.19.0 build32
+cp -a wayland-1.20.0 build32
 popd
 pushd ..
-cp -a wayland-1.19.0 buildavx2
+cp -a wayland-1.20.0 buildavx2
 popd
 
 %build
@@ -143,7 +142,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1633809533
+export SOURCE_DATE_EPOCH=1639515734
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -152,46 +151,25 @@ export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=a
 export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
 export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
 export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -ffat-lto-objects -flto=auto -fno-semantic-interposition -mno-vzeroupper -mprefer-vector-width=256 "
-%configure --disable-static --disable-documentation
-make  %{?_smp_mflags}
-
+CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --prefix=/usr --buildtype=plain -Ddocumentation=false  builddir
+ninja -v -C builddir
+CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 -O3" CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 " LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3" meson --libdir=lib64 --prefix=/usr --buildtype=plain -Ddocumentation=false  builddiravx2
+ninja -v -C builddiravx2
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig:/usr/share/pkgconfig"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
 export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
 export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
 export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
-%configure --disable-static --disable-documentation   --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
-make  %{?_smp_mflags}
+meson --libdir=lib32 --prefix=/usr --buildtype=plain -Ddocumentation=false  builddir
+ninja -v -C builddir
 popd
-unset PKG_CONFIG_PATH
-pushd ../buildavx2/
-export CFLAGS="$CFLAGS -m64 -march=x86-64-v3"
-export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3"
-export FFLAGS="$FFLAGS -m64 -march=x86-64-v3"
-export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3"
-export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3"
-%configure --disable-static --disable-documentation
-make  %{?_smp_mflags}
-popd
-%check
-export LANG=C.UTF-8
-export http_proxy=http://127.0.0.1:9/
-export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost,127.0.0.1,0.0.0.0
-make %{?_smp_mflags} check
-cd ../build32;
-make %{?_smp_mflags} check || :
-cd ../buildavx2;
-make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1633809533
-rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/wayland
-cp %{_builddir}/wayland-1.19.0/COPYING %{buildroot}/usr/share/package-licenses/wayland/997b2f1a3639f31f0757b06a15035315baaffadc
+cp %{_builddir}/wayland-1.20.0/COPYING %{buildroot}/usr/share/package-licenses/wayland/997b2f1a3639f31f0757b06a15035315baaffadc
 pushd ../build32/
-%make_install32
+DESTDIR=%{buildroot} ninja -C builddir install
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
 then
 pushd %{buildroot}/usr/lib32/pkgconfig
@@ -205,11 +183,9 @@ for i in *.pc ; do ln -s $i 32$i ; done
 popd
 fi
 popd
-pushd ../buildavx2/
-%make_install_v3
+DESTDIR=%{buildroot}-v3 ninja -C builddiravx2 install
+DESTDIR=%{buildroot} ninja -C builddir install
 /usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
-popd
-%make_install
 
 %files
 %defattr(-,root,root,-)
@@ -277,25 +253,25 @@ popd
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libwayland-client.so.0
-/usr/lib64/libwayland-client.so.0.3.0
+/usr/lib64/libwayland-client.so.0.20.0
 /usr/lib64/libwayland-cursor.so.0
-/usr/lib64/libwayland-cursor.so.0.0.0
+/usr/lib64/libwayland-cursor.so.0.20.0
 /usr/lib64/libwayland-egl.so.1
-/usr/lib64/libwayland-egl.so.1.0.0
+/usr/lib64/libwayland-egl.so.1.20.0
 /usr/lib64/libwayland-server.so.0
-/usr/lib64/libwayland-server.so.0.1.0
+/usr/lib64/libwayland-server.so.0.20.0
 /usr/share/clear/optimized-elf/lib*
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/libwayland-client.so.0
-/usr/lib32/libwayland-client.so.0.3.0
+/usr/lib32/libwayland-client.so.0.20.0
 /usr/lib32/libwayland-cursor.so.0
-/usr/lib32/libwayland-cursor.so.0.0.0
+/usr/lib32/libwayland-cursor.so.0.20.0
 /usr/lib32/libwayland-egl.so.1
-/usr/lib32/libwayland-egl.so.1.0.0
+/usr/lib32/libwayland-egl.so.1.20.0
 /usr/lib32/libwayland-server.so.0
-/usr/lib32/libwayland-server.so.0.1.0
+/usr/lib32/libwayland-server.so.0.20.0
 
 %files license
 %defattr(0644,root,root,0755)

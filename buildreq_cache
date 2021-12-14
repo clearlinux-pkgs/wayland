@@ -1,2 +1,8 @@
-1.19.0
-pkg-config
+1.20.0
+expat-dev
+pkgconfig(32expat)
+pkgconfig(32libffi)
+pkgconfig(32libxml-2.0)
+pkgconfig(expat)
+pkgconfig(libffi)
+pkgconfig(libxml-2.0)
