@@ -5,3 +5,6 @@ xmlto
 graphviz
 doxygen
 libxslt
+expat-dev32
+libxml2-dev32
+libffi-dev32

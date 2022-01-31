@@ -6,7 +6,7 @@
 #
 Name     : wayland
 Version  : 1.20.0
-Release  : 36
+Release  : 37
 URL      : https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz
 Source0  : https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz
 Source1  : https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz.sig
@@ -22,7 +22,15 @@ BuildRequires : buildreq-meson
 BuildRequires : docbook-xml
 BuildRequires : doxygen
 BuildRequires : expat-dev
+BuildRequires : expat-dev32
+BuildRequires : gcc-dev32
+BuildRequires : gcc-libgcc32
+BuildRequires : gcc-libstdc++32
+BuildRequires : glibc-dev32
+BuildRequires : glibc-libc32
 BuildRequires : graphviz
+BuildRequires : libffi-dev32
+BuildRequires : libxml2-dev32
 BuildRequires : libxslt
 BuildRequires : pkgconfig(expat)
 BuildRequires : pkgconfig(libffi)
@@ -70,6 +78,18 @@ Requires: wayland = %{version}-%{release}
 dev components for the wayland package.
 
 
+%package dev32
+Summary: dev32 components for the wayland package.
+Group: Default
+Requires: wayland-lib32 = %{version}-%{release}
+Requires: wayland-bin = %{version}-%{release}
+Requires: wayland-data = %{version}-%{release}
+Requires: wayland-dev = %{version}-%{release}
+
+%description dev32
+dev32 components for the wayland package.
+
+
 %package filemap
 Summary: filemap components for the wayland package.
 Group: Default
@@ -89,6 +109,16 @@ Requires: wayland-filemap = %{version}-%{release}
 lib components for the wayland package.
 
 
+%package lib32
+Summary: lib32 components for the wayland package.
+Group: Default
+Requires: wayland-data = %{version}-%{release}
+Requires: wayland-license = %{version}-%{release}
+
+%description lib32
+lib32 components for the wayland package.
+
+
 %package license
 Summary: license components for the wayland package.
 Group: Default
@@ -101,6 +131,9 @@ license components for the wayland package.
 %setup -q -n wayland-1.20.0
 cd %{_builddir}/wayland-1.20.0
 pushd ..
+cp -a wayland-1.20.0 build32
+popd
+pushd ..
 cp -a wayland-1.20.0 buildavx2
 popd
 
@@ -109,7 +142,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1642545475
+export SOURCE_DATE_EPOCH=1643650579
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -122,10 +155,34 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --
 ninja -v -C builddir
 CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 -O3" CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 " LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3" meson --libdir=lib64 --prefix=/usr --buildtype=plain -Ddocumentation=false  builddiravx2
 ninja -v -C builddiravx2
+pushd ../build32/
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig:/usr/share/pkgconfig"
+export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
+meson --libdir=lib32 --prefix=/usr --buildtype=plain -Ddocumentation=false  builddir
+ninja -v -C builddir
+popd
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/wayland
 cp %{_builddir}/wayland-1.20.0/COPYING %{buildroot}/usr/share/package-licenses/wayland/997b2f1a3639f31f0757b06a15035315baaffadc
+pushd ../build32/
+DESTDIR=%{buildroot} ninja -C builddir install
+if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
+then
+pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+if [ -d %{buildroot}/usr/share/pkgconfig ]
+then
+pushd %{buildroot}/usr/share/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+popd
 DESTDIR=%{buildroot}-v3 ninja -C builddiravx2 install
 DESTDIR=%{buildroot} ninja -C builddir install
 /usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
@@ -170,6 +227,25 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/pkgconfig/wayland-server.pc
 /usr/share/aclocal/*.m4
 
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/libwayland-client.so
+/usr/lib32/libwayland-cursor.so
+/usr/lib32/libwayland-egl.so
+/usr/lib32/libwayland-server.so
+/usr/lib32/pkgconfig/32wayland-client.pc
+/usr/lib32/pkgconfig/32wayland-cursor.pc
+/usr/lib32/pkgconfig/32wayland-egl-backend.pc
+/usr/lib32/pkgconfig/32wayland-egl.pc
+/usr/lib32/pkgconfig/32wayland-scanner.pc
+/usr/lib32/pkgconfig/32wayland-server.pc
+/usr/lib32/pkgconfig/wayland-client.pc
+/usr/lib32/pkgconfig/wayland-cursor.pc
+/usr/lib32/pkgconfig/wayland-egl-backend.pc
+/usr/lib32/pkgconfig/wayland-egl.pc
+/usr/lib32/pkgconfig/wayland-scanner.pc
+/usr/lib32/pkgconfig/wayland-server.pc
+
 %files filemap
 %defattr(-,root,root,-)
 /usr/share/clear/filemap/filemap-wayland
@@ -185,6 +261,17 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/libwayland-server.so.0
 /usr/lib64/libwayland-server.so.0.20.0
 /usr/share/clear/optimized-elf/lib*
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/libwayland-client.so.0
+/usr/lib32/libwayland-client.so.0.20.0
+/usr/lib32/libwayland-cursor.so.0
+/usr/lib32/libwayland-cursor.so.0.20.0
+/usr/lib32/libwayland-egl.so.1
+/usr/lib32/libwayland-egl.so.1.20.0
+/usr/lib32/libwayland-server.so.0
+/usr/lib32/libwayland-server.so.0.20.0
 
 %files license
 %defattr(0644,root,root,0755)
