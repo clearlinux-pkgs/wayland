@@ -1,9 +1,11 @@
 # This file contains recursive sources that require this package
 Vulkan-Tools
+bemenu
 glfw
 kscreenlocker
 kwayland
 kwayland-server
+kwin
 layer-shell-qt
 libkscreen
 librealsense
