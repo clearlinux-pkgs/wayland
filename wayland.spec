@@ -5,11 +5,11 @@
 # Source0 file verified with key 0x0FDE7BE0E88F5E48 (contact@emersion.fr)
 #
 Name     : wayland
-Version  : 1.20.0
-Release  : 38
-URL      : https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz
-Source0  : https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz
-Source1  : https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz.sig
+Version  : 1.21.0
+Release  : 39
+URL      : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.21.0/downloads/wayland-1.21.0.tar.xz
+Source0  : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.21.0/downloads/wayland-1.21.0.tar.xz
+Source1  : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.21.0/downloads/wayland-1.21.0.tar.xz.sig
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : MIT
@@ -21,7 +21,6 @@ Requires: wayland-license = %{version}-%{release}
 BuildRequires : buildreq-meson
 BuildRequires : docbook-xml
 BuildRequires : doxygen
-BuildRequires : expat-dev
 BuildRequires : expat-dev32
 BuildRequires : gcc-dev32
 BuildRequires : gcc-libgcc32
@@ -32,9 +31,6 @@ BuildRequires : graphviz
 BuildRequires : libffi-dev32
 BuildRequires : libxml2-dev32
 BuildRequires : libxslt
-BuildRequires : pkgconfig(expat)
-BuildRequires : pkgconfig(libffi)
-BuildRequires : pkgconfig(libxml-2.0)
 BuildRequires : xmlto
 
 %description
@@ -128,13 +124,13 @@ license components for the wayland package.
 
 
 %prep
-%setup -q -n wayland-1.20.0
-cd %{_builddir}/wayland-1.20.0
+%setup -q -n wayland-1.21.0
+cd %{_builddir}/wayland-1.21.0
 pushd ..
-cp -a wayland-1.20.0 build32
+cp -a wayland-1.21.0 build32
 popd
 pushd ..
-cp -a wayland-1.20.0 buildavx2
+cp -a wayland-1.21.0 buildavx2
 popd
 
 %build
@@ -142,7 +138,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1656347962
+export SOURCE_DATE_EPOCH=1656690834
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -167,7 +163,7 @@ popd
 
 %install
 mkdir -p %{buildroot}/usr/share/package-licenses/wayland
-cp %{_builddir}/wayland-1.20.0/COPYING %{buildroot}/usr/share/package-licenses/wayland/997b2f1a3639f31f0757b06a15035315baaffadc
+cp %{_builddir}/wayland-1.21.0/COPYING %{buildroot}/usr/share/package-licenses/wayland/997b2f1a3639f31f0757b06a15035315baaffadc
 pushd ../build32/
 DESTDIR=%{buildroot} ninja -C builddir install
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -257,32 +253,32 @@ DESTDIR=%{buildroot} ninja -C builddir install
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-client.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-client.so.0.20.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-client.so.0.21.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-cursor.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-cursor.so.0.20.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-cursor.so.0.21.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-egl.so.1
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-egl.so.1.20.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-egl.so.1.21.0
 /usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-server.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-server.so.0.20.0
+/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-server.so.0.21.0
 /usr/lib64/libwayland-client.so.0
-/usr/lib64/libwayland-client.so.0.20.0
+/usr/lib64/libwayland-client.so.0.21.0
 /usr/lib64/libwayland-cursor.so.0
-/usr/lib64/libwayland-cursor.so.0.20.0
+/usr/lib64/libwayland-cursor.so.0.21.0
 /usr/lib64/libwayland-egl.so.1
-/usr/lib64/libwayland-egl.so.1.20.0
+/usr/lib64/libwayland-egl.so.1.21.0
 /usr/lib64/libwayland-server.so.0
-/usr/lib64/libwayland-server.so.0.20.0
+/usr/lib64/libwayland-server.so.0.21.0
 
 %files lib32
 %defattr(-,root,root,-)
 /usr/lib32/libwayland-client.so.0
-/usr/lib32/libwayland-client.so.0.20.0
+/usr/lib32/libwayland-client.so.0.21.0
 /usr/lib32/libwayland-cursor.so.0
-/usr/lib32/libwayland-cursor.so.0.20.0
+/usr/lib32/libwayland-cursor.so.0.21.0
 /usr/lib32/libwayland-egl.so.1
-/usr/lib32/libwayland-egl.so.1.20.0
+/usr/lib32/libwayland-egl.so.1.21.0
 /usr/lib32/libwayland-server.so.0
-/usr/lib32/libwayland-server.so.0.20.0
+/usr/lib32/libwayland-server.so.0.21.0
 
 %files license
 %defattr(0644,root,root,0755)

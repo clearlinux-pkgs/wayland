@@ -1,5 +1,5 @@
 PKG_NAME := wayland
-URL = https://wayland.freedesktop.org/releases/wayland-1.20.0.tar.xz
+URL = https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.21.0/downloads/wayland-1.21.0.tar.xz
 ARCHIVES = 
 
 include ../common/Makefile.common

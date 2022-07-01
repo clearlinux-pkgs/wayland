@@ -125,6 +125,7 @@ libwayland-server.so.0:wl_global_destroy
 libwayland-server.so.0:wl_global_get_display
 libwayland-server.so.0:wl_global_get_interface
 libwayland-server.so.0:wl_global_get_user_data
+libwayland-server.so.0:wl_global_get_version
 libwayland-server.so.0:wl_global_remove
 libwayland-server.so.0:wl_global_set_user_data
 libwayland-server.so.0:wl_list_empty
@@ -169,3 +170,4 @@ libwayland-server.so.0:wl_shm_buffer_get_stride
 libwayland-server.so.0:wl_shm_buffer_get_width
 libwayland-server.so.0:wl_shm_buffer_ref_pool
 libwayland-server.so.0:wl_shm_pool_unref
+libwayland-server.so.0:wl_signal_emit_mutable
