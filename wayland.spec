@@ -6,7 +6,7 @@
 #
 Name     : wayland
 Version  : 1.21.0
-Release  : 43
+Release  : 44
 URL      : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.21.0/downloads/wayland-1.21.0.tar.xz
 Source0  : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.21.0/downloads/wayland-1.21.0.tar.xz
 Source1  : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.21.0/downloads/wayland-1.21.0.tar.xz.sig
