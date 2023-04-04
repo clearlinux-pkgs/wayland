@@ -65,6 +65,7 @@ libwayland-server.so.0:wl_array_add
 libwayland-server.so.0:wl_array_copy
 libwayland-server.so.0:wl_array_init
 libwayland-server.so.0:wl_array_release
+libwayland-server.so.0:wl_client_add_destroy_late_listener
 libwayland-server.so.0:wl_client_add_destroy_listener
 libwayland-server.so.0:wl_client_add_object
 libwayland-server.so.0:wl_client_add_resource
@@ -75,6 +76,7 @@ libwayland-server.so.0:wl_client_flush
 libwayland-server.so.0:wl_client_for_each_resource
 libwayland-server.so.0:wl_client_from_link
 libwayland-server.so.0:wl_client_get_credentials
+libwayland-server.so.0:wl_client_get_destroy_late_listener
 libwayland-server.so.0:wl_client_get_destroy_listener
 libwayland-server.so.0:wl_client_get_display
 libwayland-server.so.0:wl_client_get_fd
@@ -124,6 +126,7 @@ libwayland-server.so.0:wl_global_create
 libwayland-server.so.0:wl_global_destroy
 libwayland-server.so.0:wl_global_get_display
 libwayland-server.so.0:wl_global_get_interface
+libwayland-server.so.0:wl_global_get_name
 libwayland-server.so.0:wl_global_get_user_data
 libwayland-server.so.0:wl_global_get_version
 libwayland-server.so.0:wl_global_remove
