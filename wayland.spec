@@ -7,7 +7,7 @@
 #
 Name     : wayland
 Version  : 1.22.0
-Release  : 45
+Release  : 46
 URL      : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz
 Source0  : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz
 Source1  : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz.sig
@@ -16,7 +16,6 @@ Group    : Development/Tools
 License  : MIT
 Requires: wayland-bin = %{version}-%{release}
 Requires: wayland-data = %{version}-%{release}
-Requires: wayland-filemap = %{version}-%{release}
 Requires: wayland-lib = %{version}-%{release}
 Requires: wayland-license = %{version}-%{release}
 BuildRequires : buildreq-meson
@@ -51,7 +50,6 @@ Summary: bin components for the wayland package.
 Group: Binaries
 Requires: wayland-data = %{version}-%{release}
 Requires: wayland-license = %{version}-%{release}
-Requires: wayland-filemap = %{version}-%{release}
 
 %description bin
 bin components for the wayland package.
@@ -90,20 +88,11 @@ Requires: wayland-dev = %{version}-%{release}
 dev32 components for the wayland package.
 
 
-%package filemap
-Summary: filemap components for the wayland package.
-Group: Default
-
-%description filemap
-filemap components for the wayland package.
-
-
 %package lib
 Summary: lib components for the wayland package.
 Group: Libraries
 Requires: wayland-data = %{version}-%{release}
 Requires: wayland-license = %{version}-%{release}
-Requires: wayland-filemap = %{version}-%{release}
 
 %description lib
 lib components for the wayland package.
@@ -142,15 +131,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1680622337
+export SOURCE_DATE_EPOCH=1683038507
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
-export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
-export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
-export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
+export CFLAGS="$CFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export FCFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export FFLAGS="$FFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export CXXFLAGS="$CXXFLAGS -O3 -Ofast -falign-functions=32 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --prefix=/usr --buildtype=plain -Ddocumentation=false  builddir
 ninja -v -C builddir
 CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 -O3" CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 " LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3" meson --libdir=lib64 --prefix=/usr --buildtype=plain -Ddocumentation=false  builddiravx2
@@ -192,8 +181,8 @@ DESTDIR=%{buildroot} ninja -C builddir install
 
 %files bin
 %defattr(-,root,root,-)
+/V3/usr/bin/wayland-scanner
 /usr/bin/wayland-scanner
-/usr/share/clear/optimized-elf/bin*
 
 %files data
 %defattr(-,root,root,-)
@@ -203,6 +192,10 @@ DESTDIR=%{buildroot} ninja -C builddir install
 
 %files dev
 %defattr(-,root,root,-)
+/V3/usr/lib64/libwayland-client.so
+/V3/usr/lib64/libwayland-cursor.so
+/V3/usr/lib64/libwayland-egl.so
+/V3/usr/lib64/libwayland-server.so
 /usr/include/wayland-client-core.h
 /usr/include/wayland-client-protocol.h
 /usr/include/wayland-client.h
@@ -215,10 +208,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/include/wayland-server.h
 /usr/include/wayland-util.h
 /usr/include/wayland-version.h
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-client.so
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-cursor.so
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-egl.so
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-server.so
 /usr/lib64/libwayland-client.so
 /usr/lib64/libwayland-cursor.so
 /usr/lib64/libwayland-egl.so
@@ -250,20 +239,16 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib32/pkgconfig/wayland-scanner.pc
 /usr/lib32/pkgconfig/wayland-server.pc
 
-%files filemap
-%defattr(-,root,root,-)
-/usr/share/clear/filemap/filemap-wayland
-
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-client.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-client.so.0.22.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-cursor.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-cursor.so.0.22.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-egl.so.1
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-egl.so.1.22.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-server.so.0
-/usr/lib64/glibc-hwcaps/x86-64-v3/libwayland-server.so.0.22.0
+/V3/usr/lib64/libwayland-client.so.0
+/V3/usr/lib64/libwayland-client.so.0.22.0
+/V3/usr/lib64/libwayland-cursor.so.0
+/V3/usr/lib64/libwayland-cursor.so.0.22.0
+/V3/usr/lib64/libwayland-egl.so.1
+/V3/usr/lib64/libwayland-egl.so.1.22.0
+/V3/usr/lib64/libwayland-server.so.0
+/V3/usr/lib64/libwayland-server.so.0.22.0
 /usr/lib64/libwayland-client.so.0
 /usr/lib64/libwayland-client.so.0.22.0
 /usr/lib64/libwayland-cursor.so.0
