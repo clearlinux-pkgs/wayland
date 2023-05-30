@@ -7,7 +7,7 @@
 #
 Name     : wayland
 Version  : 1.22.0
-Release  : 47
+Release  : 48
 URL      : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz
 Source0  : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz
 Source1  : https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz.sig
@@ -131,7 +131,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1683241200
+export SOURCE_DATE_EPOCH=1685486864
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -192,10 +192,6 @@ DESTDIR=%{buildroot} ninja -C builddir install
 
 %files dev
 %defattr(-,root,root,-)
-/V3/usr/lib64/libwayland-client.so
-/V3/usr/lib64/libwayland-cursor.so
-/V3/usr/lib64/libwayland-egl.so
-/V3/usr/lib64/libwayland-server.so
 /usr/include/wayland-client-core.h
 /usr/include/wayland-client-protocol.h
 /usr/include/wayland-client.h
@@ -241,13 +237,9 @@ DESTDIR=%{buildroot} ninja -C builddir install
 
 %files lib
 %defattr(-,root,root,-)
-/V3/usr/lib64/libwayland-client.so.0
 /V3/usr/lib64/libwayland-client.so.0.22.0
-/V3/usr/lib64/libwayland-cursor.so.0
 /V3/usr/lib64/libwayland-cursor.so.0.22.0
-/V3/usr/lib64/libwayland-egl.so.1
 /V3/usr/lib64/libwayland-egl.so.1.22.0
-/V3/usr/lib64/libwayland-server.so.0
 /V3/usr/lib64/libwayland-server.so.0.22.0
 /usr/lib64/libwayland-client.so.0
 /usr/lib64/libwayland-client.so.0.22.0
