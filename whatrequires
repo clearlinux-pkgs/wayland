@@ -1,5 +1,6 @@
 # This file contains recursive sources that require this package
 bemenu
+extra-cmake-modules
 glfw
 kscreenlocker
 kwayland
@@ -8,5 +9,6 @@ kwin
 layer-shell-qt
 libkscreen
 librealsense
+mesa-demos
+plasma-wayland-protocols
 qt6wayland
-qt6webengine
